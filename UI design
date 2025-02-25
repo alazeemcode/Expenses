@@ -1,0 +1,63 @@
+// src/App.tsx
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Dashboard from './components/Dashboard';
+import ExpenseForm from './components/ExpenseForm';
+import ExpenseList from './components/ExpenseList';
+import Login from './components/Login';
+import Register from './components/Register';
+import Navbar from './components/Navbar';
+import Reports from './components/Reports';
+import Settings from './components/Settings';
+import ProtectedRoute from './components/ProtectedRoute';
+
+const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  return (
+    <Router>
+      <div className="min-h-screen bg-gray-100">
+        {isAuthenticated && <Navbar />}
+        <div className="container mx-auto px-4 py-8">
+          <Routes>
+            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/expenses" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ExpenseList />
+              </ProtectedRoute>
+            } />
+            <Route path="/expenses/new" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ExpenseForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/expenses/:id" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <ExpenseForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/reports" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Reports />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <Settings />
+              </ProtectedRoute>
+            } />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
+};
+
+export default App;
